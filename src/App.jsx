@@ -8,7 +8,7 @@ function App() {
   return (
     <>
     <Toaster />
-    <Anayltics />
+    <Analytics />
     <BrowserRouter>
       <Routes>
         <Route index element={<Home />}/>
