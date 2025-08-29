@@ -2,6 +2,7 @@ import { Instagram, Linkedin, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast'
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 export const ContactSection = () => {
     const { toast } = useToast();
@@ -12,6 +13,21 @@ export const ContactSection = () => {
 
         setIsSubmitting(true);
 
+        var templateParams = {
+            name: e.target.elements["name"].value,
+            email: e.target.elements["email"].value,
+            message: e.target.elements["message"].value
+        };
+
+        emailjs.send('service_54rv99v', 'template_bqd3ivp', templateParams).then(
+            (reponse) => {
+                console.log('SUCCESS', reponse.status, Response.text)
+            },
+            (error) => {
+                console.log('FAILED', error)
+            },
+        );
+
         setTimeout(() => {
             toast({
                 title: "Message sent!",
@@ -20,6 +36,24 @@ export const ContactSection = () => {
             setIsSubmitting(false);
         }, 1500);
     };
+
+    emailjs.init({
+        publicKey: '6JIE5y95De8FQ2reP',
+        // Do not allow headless browsers
+        blockHeadless: true,
+        blockList: {
+            // Block the suspended emails
+            list: [],
+            // The variable contains the email address
+            watchVariable: 'treytrent54@gmail.com',
+        },
+        limitRate: {
+            // Set the limit rate for the application
+            id: 'app',
+            // Allow 1 request per 10s
+            throttle: 10000,
+        },
+    });
 
     return (
         <section id="contact" className="py-24 px-4 relative bg-secondary/30">
@@ -64,9 +98,9 @@ export const ContactSection = () => {
                         </div>
                     </div>
 
-                    <div className="bg-card p-8 rounded-lg shadow-xs" onSubmit={handleSubmit}>
+                    <div className="bg-card p-8 rounded-lg shadow-xs">
                         <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium mb-2">Your Name</label>
                                 <input
